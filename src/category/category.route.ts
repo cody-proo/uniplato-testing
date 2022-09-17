@@ -1,16 +1,22 @@
 import { Express } from "express";
+import { UserMiddleware } from "../user/user.middleware";
 import { CategoryController } from "./category.controller";
 
 export class CategoryRouter {
+  private categoryController: CategoryController;
+  private userMiddleware: UserMiddleware;
+
   constructor(
     private readonly app: Express,
-    private readonly categoryController: CategoryController
-  ) { }
+  ) {
+    this.categoryController = new CategoryController()
+    this.userMiddleware = new UserMiddleware()
+  }
 
   config() {
     this.app.get("/category", this.categoryController.getAll);
     this.app.get("/category/:categoryId", this.categoryController.getOne);
-    this.app.post("/category", this.categoryController.create);
-    this.app.patch("/category/:categoryId", this.categoryController.update);
+    this.app.post("/category", this.userMiddleware.auth, this.categoryController.create);
+    this.app.patch("/category/:categoryId", this.userMiddleware.auth, this.categoryController.update);
   }
 }
