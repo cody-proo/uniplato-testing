@@ -4,16 +4,19 @@ import joi from "joi";
 // Validation Schema For Signup That Contains Email - Password - Bio - Role
 export const signupSchema = joi.object().keys({
   email: joi.string().email().required().messages({
+    // Customizing Error Messages
     "string.base": "you must enter string for email",
     "any.required": "you must enter email address",
     "string.email": "you must enter valid email address",
   }),
   password: joi.string().min(8).required().messages({
+    // Customizing Error Messages
     "string.base": "you must enter string for password",
     "any.required": "you must enter password",
     "string.min": "your password must contain atleast 8 character",
   }),
   bio: joi.string().optional().messages({
+    // Customizing Error Messages
     "string.base": "you must enter string for bio",
   }),
   role: joi
@@ -21,6 +24,7 @@ export const signupSchema = joi.object().keys({
     .valid(...Object.values(UserRole))
     .optional()
     .messages({
+      // Customizing Error Messages
       "string.base": "you must enter string for role",
       "any.valid": `user role must be ${Object.values(UserRole)}`,
     }),
@@ -29,11 +33,13 @@ export const signupSchema = joi.object().keys({
 // Validation Schema For Login That Contains Email - Password
 export const loginSchema = joi.object().keys({
   email: joi.string().email().required().messages({
+    // Customizing Error Messages
     "string.base": "you must enter string for email",
     "any.required": "you must enter email address",
     "string.email": "you must enter valid email address",
   }),
   password: joi.string().min(8).required().messages({
+    // Customizing Error Messages
     "string.base": "you must enter string for password",
     "any.required": "you must enter password",
     "string.min": "your password must contain atleast 8 character",
