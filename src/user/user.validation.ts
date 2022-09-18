@@ -1,6 +1,7 @@
 import { UserRole } from "@prisma/client";
 import joi from "joi";
 
+// Validation Schema For Signup That Contains Email - Password - Bio - Role
 export const signupSchema = joi.object().keys({
   email: joi.string().email().required().messages({
     "string.base": "you must enter string for email",
@@ -25,6 +26,7 @@ export const signupSchema = joi.object().keys({
     }),
 });
 
+// Validation Schema For Login That Contains Email - Password
 export const loginSchema = joi.object().keys({
   email: joi.string().email().required().messages({
     "string.base": "you must enter string for email",
