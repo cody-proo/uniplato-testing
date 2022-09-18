@@ -22,10 +22,11 @@ export class AppMiddleware {
     );
     // If Request Body Contain At Least One Error Throw It
     if (error?.message) {
-      return response.status(400).json({
-        message: "BadRequestException",
-        messages: error?.message,
-      });
+      return response
+        .status(400)
+        .json({
+          messages: error?.message?.split(".")?.map((e) => e.trim()),
+        });
     }
     return next();
   }

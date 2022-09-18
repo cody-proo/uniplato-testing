@@ -9,6 +9,9 @@ describe("Category Endpoints", () => {
   beforeAll(() => {
     prisma = new PrismaClient();
   });
+  afterAll(() => {
+    prisma.$disconnect();
+  });
 
   // FETCH ALL CATEGORIES
   describe("FETCH ALL : /category", () => {
@@ -72,7 +75,7 @@ describe("Category Endpoints", () => {
       const token = jwt.sign(
         { id: collaboratorUser?.id, role: collaboratorUser?.role },
         "supersecretkey",
-        { expiresIn: config.TOKEN_EXP }
+        { expiresIn: "1m" }
       );
       // SEND REQUEST TO SPECEFIC ROUTES
       const response = await request(app())
@@ -115,7 +118,7 @@ describe("Category Endpoints", () => {
       const token = jwt.sign(
         { id: adminUser?.id, role: adminUser?.role },
         "supersecretkey",
-        { expiresIn: config.TOKEN_EXP }
+        { expiresIn: "1m" }
       );
       // SEND REQUEST TO CREATE CATEGORY
       const response = await request(app())
@@ -149,7 +152,7 @@ describe("Category Endpoints", () => {
       const token = jwt.sign(
         { id: user?.id, role: user?.role },
         "supersecretkey",
-        { expiresIn: config.TOKEN_EXP }
+        { expiresIn: "1m" }
       );
       // SEND REQUEST TO UPDATE CATEGORY
       const response = await request(app())
@@ -188,7 +191,7 @@ describe("Category Endpoints", () => {
       const token = jwt.sign(
         { id: user?.id, role: user?.role },
         "supersecretkey",
-        { expiresIn: config.TOKEN_EXP }
+        { expiresIn: "1m" }
       );
       const response = await request(app())
         .patch(`/category/${category?.id}`)
@@ -221,7 +224,7 @@ describe("Category Endpoints", () => {
       const token = jwt.sign(
         { id: user?.id, role: user?.role },
         "supersecretkey",
-        { expiresIn: config.TOKEN_EXP }
+        { expiresIn: "1m" }
       );
       // SEND PATCH REQUEST TO UPDATE TITLE AND AMOUNT CATEGORY
       const response = await request(app())
@@ -256,7 +259,7 @@ describe("Category Endpoints", () => {
       const token = jwt.sign(
         { id: user?.id, role: user?.role },
         "supersecretkey",
-        { expiresIn: config.TOKEN_EXP }
+        { expiresIn: "1m" }
       );
       // SEND REQUEST TO NOT EXISTING CATEGORY ON DATABASE
       const response = await request(app())
