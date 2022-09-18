@@ -53,3 +53,6 @@ follow these steps to work with this api
 - DATABASE_URL
 - SECRET_KEY
 - TOKEN_EXP
+
+### At The End Start And Enjoy That
+- npm start
