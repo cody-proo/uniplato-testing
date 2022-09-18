@@ -13,7 +13,9 @@ export class UserController extends BaseController {
     });
     // If User With This Email Not Exist
     if (!user) {
-      throw new Error("Invalid Email");
+      return response.status(400).json({
+        message: "Email Address Dosn't Match With Password",
+      });
     }
     const isMatchPassword = await bcrypt.compare(
       password,
@@ -21,7 +23,9 @@ export class UserController extends BaseController {
     );
     // If User Exist But Dosn't Match Password
     if (!isMatchPassword) {
-      throw new Error("Invalid Email");
+      return response.status(400).json({
+        message: "Email Address Dosn't Match With Password",
+      });
     }
 
     // Generate Token That Contains Role And Id
@@ -42,7 +46,9 @@ export class UserController extends BaseController {
       where: { email },
     });
     if (isExistUser) {
-      throw new Error("Email is already taken");
+      return response
+        .status(400)
+        .json({ message: "Email is already taken" });
     }
     // Hashing Password For Security Reason
     const hashPassword = await bcrypt.hash(password, 8);
@@ -67,7 +73,7 @@ export class UserController extends BaseController {
     });
     // If No One Exist With This ID Throw Error
     if (!user) {
-      throw new Error("User Not Found");
+      return response.status(404).json({ message: "User Not Found" });
     }
     return response.status(200).json({ user });
   };

@@ -37,7 +37,11 @@ export class CategoryRouter {
     this.app.post(
       "/category",
       // validation middleware binding
-      this.appMiddleware.validation.bind(null, createCategorySchema),
+      this.appMiddleware.validation.bind(
+        null,
+        createCategorySchema,
+        "body"
+      ),
       // auth middleware
       this.userMiddleware.auth,
       // role middleware binding that must be admin
@@ -48,7 +52,11 @@ export class CategoryRouter {
     this.app.patch(
       "/category/:categoryId",
       // validation middleware binding
-      this.appMiddleware.validation.bind(null, updateCategorySchema),
+      this.appMiddleware.validation.bind(
+        null,
+        updateCategorySchema,
+        "body"
+      ),
       // auth middleware
       this.userMiddleware.auth,
       // role middleware binding that must be admin or collaborator

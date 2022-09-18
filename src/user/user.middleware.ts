@@ -9,12 +9,16 @@ export class UserMiddleware {
   auth(request: Request, response: Response, next: NextFunction) {
     const token = request.get("authorization")?.split("Bearer ")[1];
     if (!token) {
-      throw new Error("Unauthorization");
+      return response
+        .status(401)
+        .json({ message: "Unauthorization" });
     }
     const decodedToken = jwt.decode(token) as JwtPayload &
       IRequestUser;
     if (decodedToken.exp! * 1000 < Date.now()) {
-      throw new Error("Unauthorization");
+      return response
+        .status(401)
+        .json({ message: "Unauthorization" });
     }
     request.user = { id: decodedToken.id, role: decodedToken.role };
     return next();
@@ -35,8 +39,11 @@ export class UserMiddleware {
       Array.isArray(type) && (type as UserRole[]).includes(userRole);
     const stringCheckingRole =
       typeof type === "string" && userRole === type;
-    if (!arrayCheckingRole && !stringCheckingRole)
-      throw new Error("Invalid Permission");
+    if (!arrayCheckingRole && !stringCheckingRole) {
+      return response
+        .status(403)
+        .json({ message: "Permission Denied" });
+    }
     return next();
   }
 }

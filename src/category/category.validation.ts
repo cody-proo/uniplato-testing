@@ -24,3 +24,7 @@ export const updateCategorySchema = joi.object().keys({
     "any.number": "you must enter number for amount",
   }),
 });
+
+export const categoryIdParam = joi.object().keys({
+  categoryId: joi.number().required(),
+});

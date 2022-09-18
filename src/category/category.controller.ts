@@ -6,18 +6,22 @@ export class CategoryController extends BaseController {
   // get all categories action
   getAll = async (request: Request, response: Response) => {
     const categories = await this.repo.category.findMany();
-    return response.status(200).json({ categories }); 
+    return response.status(200).json({ categories });
   };
 
   // get single category action
   getOne = async (request: Request, response: Response) => {
     const { categoryId } = request.params;
-    const selectedCategory =
-      await this.repo.category.findUniqueOrThrow({
-        where: {
-          id: +categoryId,
-        },
-      });
+    const selectedCategory = await this.repo.category.findUnique({
+      where: {
+        id: +categoryId,
+      },
+    });
+    if (!selectedCategory) {
+      return response
+        .status(404)
+        .json({ message: "No Category Exist" });
+    }
     return response.json({ category: selectedCategory });
   };
 
@@ -41,7 +45,9 @@ export class CategoryController extends BaseController {
       data: request.body,
     });
     if (!updatedCategory) {
-      throw new Error("Something Wrong in Updating");
+      return response
+        .status(400)
+        .json({ message: "Update Process Failed ..." });
     }
     return response.status(200).json({ category: updatedCategory });
   };

@@ -23,13 +23,13 @@ export class UserRouter {
     // login route that has validation on email and password
     this.app.post(
       "/user/login",
-      this.appMiddleware.validation.bind(null, loginSchema),
+      this.appMiddleware.validation.bind(null, loginSchema, "body"),
       this.userController.login
     );
     // signup route that has validation on email and password and role and bio
     this.app.post(
       "/user/signup",
-      this.appMiddleware.validation.bind(null, signupSchema),
+      this.appMiddleware.validation.bind(null, signupSchema, "body"),
       this.userController.signup
     );
     // profile route that has authentication middleware for recognizing user and show user profile like bio - email - id
