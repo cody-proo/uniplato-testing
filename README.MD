@@ -13,4 +13,10 @@ This repository contains two main module that called user and category .every mo
 > jsonwebtoken,
 > bcrypt,
 > joi,
-> prisma,
+> prisma
+
+# How Use This API
+
+## First npm install
+
+for install third party packages and dependencies you must use ( npm install )
