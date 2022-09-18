@@ -8,7 +8,9 @@ export class AppMiddleware {
     response: Response,
     next: NextFunction
   ) {
-    const { error } = schema.validate(request.body);
+    const { error } = schema.validate(request.body, {
+      abortEarly: false,
+    });
     if (error?.message) {
       throw new Error(error?.message);
     }
