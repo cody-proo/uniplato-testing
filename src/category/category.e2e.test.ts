@@ -2,7 +2,7 @@ import request from "supertest";
 import app from "../config/app.config";
 import jwt from "jsonwebtoken";
 import { PrismaClient, UserRole } from "@prisma/client";
-import { config } from "../config";
+import { createValidCategoryStub } from "./category.stub";
 
 describe("Category Endpoints", () => {
   let prisma: PrismaClient;
@@ -81,7 +81,7 @@ describe("Category Endpoints", () => {
       const response = await request(app())
         .post("/category")
         .set({ authorization: `Bearer ${token}` })
-        .send({ title: "Some Title", amount: 1 });
+        .send(createValidCategoryStub());
 
       // CHECK RESPONSE MESSAGE ON FAILING
       expect(response.body).toEqual({
@@ -97,7 +97,7 @@ describe("Category Endpoints", () => {
       // SEND REQUEST TO /category TO CREATE OWN CATEGORY
       const response = await request(app())
         .post("/category")
-        .send({ title: "Some Title", amount: 1 });
+        .send(createValidCategoryStub());
 
       // CHECK RESPONSE OF FAILING
       expect(response.body).toEqual({
@@ -124,7 +124,7 @@ describe("Category Endpoints", () => {
       const response = await request(app())
         .post("/category")
         .set({ authorization: `Bearer ${token}` })
-        .send({ title: "Some Title", amount: 1 });
+        .send(createValidCategoryStub());
 
       // CHECK RESPONSE SHARE
       expect(response.body).toEqual({
@@ -158,17 +158,17 @@ describe("Category Endpoints", () => {
       const response = await request(app())
         .patch(`/category/${category?.id}`)
         .set({ authorization: `Bearer ${token}` })
-        .send({ title: "UPDATE TITLE" });
+        .send({ title: createValidCategoryStub().title });
 
       // CHECK RESPONSE STATUS CODE
       expect(response.statusCode).toEqual(200);
       // CHECK RESPONSE SHAPE
       expect(response.body).toEqual({
-        category: expect.objectContaining({
-          title: "UPDATE TITLE",
+        category: {
+          title: createValidCategoryStub().title,
           amount: expect.any(Number),
           id: expect.any(Number),
-        }),
+        },
       });
       // SELECT AGAIN CATEGORY THAT UPDATED TO CHECK IS UPDATE DONE SUCCESSFULLY
       const updatedCategory = await prisma.category.findUnique({
@@ -177,7 +177,7 @@ describe("Category Endpoints", () => {
       // DATA SHAPE FOR UPDATED CATEGORY
       expect(updatedCategory).toEqual(
         expect.objectContaining({
-          title: "UPDATE TITLE",
+          title: createValidCategoryStub().title,
           amount: expect.any(Number),
           id: expect.any(Number),
         })
@@ -196,12 +196,12 @@ describe("Category Endpoints", () => {
       const response = await request(app())
         .patch(`/category/${category?.id}`)
         .set({ authorization: `Bearer ${token}` })
-        .send({ amount: 10 });
+        .send({ amount: createValidCategoryStub().amount });
       expect(response.statusCode).toEqual(200);
       expect(response.body).toEqual({
         category: expect.objectContaining({
           title: expect.any(String),
-          amount: 10,
+          amount: createValidCategoryStub().amount,
           id: expect.any(Number),
         }),
       });
@@ -211,7 +211,7 @@ describe("Category Endpoints", () => {
       expect(updatedCategory).toEqual(
         expect.objectContaining({
           title: expect.any(String),
-          amount: 10,
+          amount: createValidCategoryStub().amount,
           id: expect.any(Number),
         })
       );
@@ -230,14 +230,13 @@ describe("Category Endpoints", () => {
       const response = await request(app())
         .patch(`/category/${category?.id}`)
         .set({ authorization: `Bearer ${token}` })
-        .send({ amount: 10, title: "BOTH UPDATE" });
+        .send(createValidCategoryStub());
       // CHECK RESPONSE STATUS CODE
       expect(response.statusCode).toEqual(200);
       // CHECK RESPONSE SHAPE
       expect(response.body).toEqual({
         category: expect.objectContaining({
-          amount: 10,
-          title: "BOTH UPDATE",
+          ...createValidCategoryStub(),
           id: expect.any(Number),
         }),
       });
@@ -246,8 +245,7 @@ describe("Category Endpoints", () => {
       });
       expect(updatedCategory).toEqual(
         expect.objectContaining({
-          amount: 10,
-          title: "BOTH UPDATE",
+          ...createValidCategoryStub(),
           id: expect.any(Number),
         })
       );
@@ -265,7 +263,7 @@ describe("Category Endpoints", () => {
       const response = await request(app())
         .patch("/category/123456789")
         .set({ authorization: `Bearer ${token}` })
-        .send({ title: "Update Title" });
+        .send({ title: createValidCategoryStub().title });
       // CHECK CORRECT STATUS CODE
       expect(response.statusCode).toBe(404);
     });

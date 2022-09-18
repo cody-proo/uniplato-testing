@@ -2,6 +2,12 @@ import request from "supertest";
 import app from "../config/app.config";
 import { PrismaClient } from "@prisma/client";
 import jwt from "jsonwebtoken";
+import {
+  createInvalidUserStub,
+  createInvalidValidationUserStub,
+  createValidUserStub,
+  validUserStub,
+} from "./user.stub";
 
 describe("User Endpoints", () => {
   let prisma: PrismaClient;
@@ -15,28 +21,19 @@ describe("User Endpoints", () => {
   // LOGIN ENDPOINTS
   describe("LOGIN USER : /user/login", () => {
     it("SUCCESS", async () => {
-      const credential = {
-        email: "hosein@gmail.com",
-        password: "123456789",
-      };
       const response = await request(app())
         .post("/user/login")
-        .send(credential);
+        .send(validUserStub());
       expect(response.statusCode).toBe(200);
       expect(response.body).toEqual({ token: expect.any(String) });
     });
 
     // TEST CASE FOR INVALID USER
     it("FAILED INVALID USER", async () => {
-      // USER WITH INVALID DATA
-      const credential = {
-        email: "hosein@gmail.com",
-        password: "________",
-      };
       // SEND REQUEST TO LOGIN
       const response = await request(app())
         .post("/user/login")
-        .send(credential);
+        .send(createInvalidUserStub());
 
       // CHECK STATUS CODE
       expect(response.statusCode).toBe(400);
@@ -46,17 +43,12 @@ describe("User Endpoints", () => {
       });
     });
 
-    // TEST CASE FOR LOGIN VALIDATION
+    // TEST CASE FOR LOGIN VALIDATION - CREDENTIALS HAS INVALID DATA SO VALIDATION MUST BE FAILED
     it("FAILED VALIDATION FAILED", async () => {
-      // CREDENTIALS HAS INVALID DATA SO VALIDATION MUST BE FAILED
-      const credential = {
-        email: "something invalid", // FORMAT MUST BE EMAIL
-        password: "__", // LENGTH MUST BE 8
-      };
       // SEND REQUEST TO LOGIN
       const response = await request(app())
         .post("/user/login")
-        .send(credential);
+        .send(createInvalidValidationUserStub());
       // CHECK STATUS CODE
       expect(response.statusCode).toBe(400);
       //   CHECK RESPONSE SHAPE
@@ -69,32 +61,22 @@ describe("User Endpoints", () => {
     });
   });
 
-  // SIGNUP ENDPOINTS
+  // SIGNUP ENDPOINTS - RANDOM EMAIL WITH SIMPLE PASSWORD TO CREATE
   describe("SIGNUP USER : /user/signup", () => {
     it("SUCCESS", async () => {
-      // RANDOM EMAIL WITH SIMPLE PASSWORD
-      const credential = {
-        email: `new-gmail-${Date.now()}@gmail.com`,
-        password: "123456789",
-      };
       const response = await request(app())
         .post("/user/signup")
-        .send(credential);
+        .send(createValidUserStub());
       expect(response.statusCode).toBe(201);
       expect(response.body).toEqual({ token: expect.any(String) });
     });
 
-    // TEST CASE FOR INVALID USER
+    // TEST CASE FOR INVALID USER (EMAIL IS ALREADY TAKEN)
     it("FAILED INVALID USER SIGNUP", async () => {
-      // EMAIL IS ALREADY EXIST IN DATABASE
-      const credential = {
-        email: "hosein@gmail.com",
-        password: "________",
-      };
       // SEND REQUEST TO SIGNUP
       const response = await request(app())
         .post("/user/signup")
-        .send(credential);
+        .send(createInvalidUserStub());
 
       // CHECK STATUS CODE
       expect(response.statusCode).toBe(400);
@@ -104,17 +86,12 @@ describe("User Endpoints", () => {
       });
     });
 
-    // TEST CASE FOR SIGNUP VALIDATION
+    // TEST CASE FOR SIGNUP VALIDATION - CREDENTIALS HAS INVALID DATA SO VALIDATION MUST BE FAILED
     it("FAILED VALIDATION FAILED", async () => {
-      // CREDENTIALS HAS INVALID DATA SO VALIDATION MUST BE FAILED
-      const credential = {
-        email: "something invalid", // FORMAT MUST BE EMAIL
-        password: "__", // LENGTH MUST BE 8
-      };
       // SEND REQUEST TO SIGNUP
       const response = await request(app())
         .post("/user/signup")
-        .send(credential);
+        .send(createInvalidValidationUserStub());
       // CHECK STATUS CODE
       expect(response.statusCode).toBe(400);
       //   CHECK RESPONSE SHAPE
@@ -160,6 +137,7 @@ describe("User Endpoints", () => {
       });
     });
 
+    // SEND REQUEST TO /user WITHOUT TOKEN TO FAILED
     it("FAILED - FETCH USER INFORMATION WITHOUT ANY EXISTTING TOKEN ON HEADER", async () => {
       const response = await request(app()).get("/user");
       expect(response.statusCode).toBe(401);
