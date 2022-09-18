@@ -43,6 +43,7 @@ follow these steps to work with this api
 
 > for orm we use prisma to manage database query, for use it first of all you must inject all models into specefic database. for that you must you use
 
+- first specify correct database_url
 - npx prisma migrate dev --name you-migrate-name
 
 ### Environment Variables
