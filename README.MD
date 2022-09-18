@@ -16,8 +16,8 @@ This repository contains two main module that called user and category .every mo
 > prisma
 
 # EndPoints
-- GET /category -> for selecting all categories
-- GET /category/:id -> for selecting single category by id
+-- GET /category -> for selecting all categories
+-- GET /category/:id -> for selecting single category by id
 - POST /category -> for create new category based on title and amount
 - PATCH /category/:id -> for updating title and amount of category based on id
 
