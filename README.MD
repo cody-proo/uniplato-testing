@@ -18,10 +18,16 @@ This repository contains two main module that called user and category .every mo
 # EndPoints
 
 - Category Endpoints
+
   - GET /category -> for selecting all categories
   - GET /category/:id -> for selecting single category by id
   - POST /category -> for create new category based on title and amount
   - PATCH /category/:id -> for updating title and amount of category based on id
+
+- User Endpoints
+  - POST /user/signup -> for signing up new user in system that based on email, password, role, bio
+  - POST /user/login -> for login based on email and password
+  - GET /user -> get user profile based on token 
 
 # How Use This API
 
