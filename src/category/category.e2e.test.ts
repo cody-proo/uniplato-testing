@@ -3,6 +3,7 @@ import app from "../config/app.config";
 import jwt from "jsonwebtoken";
 import { PrismaClient, UserRole } from "@prisma/client";
 import { createValidCategoryStub } from "./category.stub";
+import { StatusCode } from "../config/statusCode.config";
 
 describe("Category Endpoints", () => {
   let prisma: PrismaClient;
@@ -29,7 +30,7 @@ describe("Category Endpoints", () => {
         ]),
       });
       // CHECK RESPONSE STATUS CODE
-      expect(response.statusCode).toBe(200);
+      expect(response.statusCode).toBe(StatusCode.OK);
     });
   });
 
@@ -39,7 +40,7 @@ describe("Category Endpoints", () => {
     it("Failed", async () => {
       // SEND REQUEST TO WRONG CATEGORY ID
       const response = await request(app()).get("/category/123456");
-      expect(response.statusCode).toBe(404);
+      expect(response.statusCode).toBe(StatusCode.NOT_FOUND);
     });
 
     // SUCCESS CASE
@@ -59,7 +60,7 @@ describe("Category Endpoints", () => {
         }),
       });
       // CHECK RESPONSE CODE
-      expect(response.statusCode).toBe(200);
+      expect(response.statusCode).toBe(StatusCode.OK);
     });
   });
 
@@ -89,7 +90,7 @@ describe("Category Endpoints", () => {
       });
 
       // CHECK REQUEST STATUS CODE
-      expect(response.statusCode).toEqual(403);
+      expect(response.statusCode).toEqual(StatusCode.FORBIDDEN);
     });
 
     // TEST FOR UNAUTHORIZED USER , WHEN DONT HAVE TOKEN
@@ -105,7 +106,7 @@ describe("Category Endpoints", () => {
       });
 
       // CHECK STATUS CODE
-      expect(response.statusCode).toEqual(401);
+      expect(response.statusCode).toEqual(StatusCode.UN_AUTH);
     });
 
     // SUCCESS CASE FOR CREATING CATEGORY
@@ -136,7 +137,7 @@ describe("Category Endpoints", () => {
       });
 
       // CHECK RESPONSE STATUS CODE
-      expect(response.statusCode).toEqual(201);
+      expect(response.statusCode).toEqual(StatusCode.CREATE);
     });
   });
 
@@ -161,7 +162,7 @@ describe("Category Endpoints", () => {
         .send({ title: createValidCategoryStub().title });
 
       // CHECK RESPONSE STATUS CODE
-      expect(response.statusCode).toEqual(200);
+      expect(response.statusCode).toEqual(StatusCode.OK);
       // CHECK RESPONSE SHAPE
       expect(response.body).toEqual({
         category: {
@@ -197,7 +198,7 @@ describe("Category Endpoints", () => {
         .patch(`/category/${category?.id}`)
         .set({ authorization: `Bearer ${token}` })
         .send({ amount: createValidCategoryStub().amount });
-      expect(response.statusCode).toEqual(200);
+      expect(response.statusCode).toEqual(StatusCode.OK);
       expect(response.body).toEqual({
         category: expect.objectContaining({
           title: expect.any(String),
@@ -232,7 +233,7 @@ describe("Category Endpoints", () => {
         .set({ authorization: `Bearer ${token}` })
         .send(createValidCategoryStub());
       // CHECK RESPONSE STATUS CODE
-      expect(response.statusCode).toEqual(200);
+      expect(response.statusCode).toEqual(StatusCode.OK);
       // CHECK RESPONSE SHAPE
       expect(response.body).toEqual({
         category: expect.objectContaining({
@@ -265,7 +266,7 @@ describe("Category Endpoints", () => {
         .set({ authorization: `Bearer ${token}` })
         .send({ title: createValidCategoryStub().title });
       // CHECK CORRECT STATUS CODE
-      expect(response.statusCode).toBe(404);
+      expect(response.statusCode).toBe(StatusCode.NOT_FOUND);
     });
   });
 });

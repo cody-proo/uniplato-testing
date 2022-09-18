@@ -1,3 +1,4 @@
+import { StatusCode } from "./../config/statusCode.config";
 import request from "supertest";
 import app from "../config/app.config";
 import { PrismaClient } from "@prisma/client";
@@ -24,7 +25,7 @@ describe("User Endpoints", () => {
       const response = await request(app())
         .post("/user/login")
         .send(validUserStub());
-      expect(response.statusCode).toBe(200);
+      expect(response.statusCode).toBe(StatusCode.OK);
       expect(response.body).toEqual({ token: expect.any(String) });
     });
 
@@ -36,7 +37,7 @@ describe("User Endpoints", () => {
         .send(createInvalidUserStub());
 
       // CHECK STATUS CODE
-      expect(response.statusCode).toBe(400);
+      expect(response.statusCode).toBe(StatusCode.BAD_REQUEST);
       // CHECK RESPONSE SHAPE
       expect(response.body).toEqual({
         message: "Email Address Dosn't Match With Password",
@@ -50,7 +51,7 @@ describe("User Endpoints", () => {
         .post("/user/login")
         .send(createInvalidValidationUserStub());
       // CHECK STATUS CODE
-      expect(response.statusCode).toBe(400);
+      expect(response.statusCode).toBe(StatusCode.BAD_REQUEST);
       //   CHECK RESPONSE SHAPE
       expect(response.body).toEqual({
         messages: [
@@ -67,7 +68,7 @@ describe("User Endpoints", () => {
       const response = await request(app())
         .post("/user/signup")
         .send(createValidUserStub());
-      expect(response.statusCode).toBe(201);
+      expect(response.statusCode).toBe(StatusCode.CREATE);
       expect(response.body).toEqual({ token: expect.any(String) });
     });
 
@@ -79,7 +80,7 @@ describe("User Endpoints", () => {
         .send(createInvalidUserStub());
 
       // CHECK STATUS CODE
-      expect(response.statusCode).toBe(400);
+      expect(response.statusCode).toBe(StatusCode.BAD_REQUEST);
       // CHECK RESPONSE SHAPE
       expect(response.body).toEqual({
         message: "Email is already taken",
@@ -93,7 +94,7 @@ describe("User Endpoints", () => {
         .post("/user/signup")
         .send(createInvalidValidationUserStub());
       // CHECK STATUS CODE
-      expect(response.statusCode).toBe(400);
+      expect(response.statusCode).toBe(StatusCode.BAD_REQUEST);
       //   CHECK RESPONSE SHAPE
       expect(response.body).toEqual({
         messages: [
@@ -122,7 +123,7 @@ describe("User Endpoints", () => {
         .set({ authorization: `Bearer ${token}` });
 
       // CHECK STATUS CODE
-      expect(response.statusCode).toBe(200);
+      expect(response.statusCode).toBe(StatusCode.OK);
       //   CHECK RESPONSE SHAPE
       expect(response.body).toEqual({
         user: expect.objectContaining({
@@ -140,7 +141,7 @@ describe("User Endpoints", () => {
     // SEND REQUEST TO /user WITHOUT TOKEN TO FAILED
     it("FAILED - FETCH USER INFORMATION WITHOUT ANY EXISTTING TOKEN ON HEADER", async () => {
       const response = await request(app()).get("/user");
-      expect(response.statusCode).toBe(401);
+      expect(response.statusCode).toBe(StatusCode.UN_AUTH);
       expect(response.body).toEqual({ message: "Unauthorization" });
     });
   });
