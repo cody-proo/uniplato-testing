@@ -6,7 +6,7 @@ export class CategoryController extends BaseController {
   // get all categories action
   getAll = async (request: Request, response: Response) => {
     const categories = await this.repo.category.findMany();
-    return response.status(200).json({ categories });
+    return response.status(200).json({ categories }); 
   };
 
   // get single category action
