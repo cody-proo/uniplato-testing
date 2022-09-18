@@ -19,9 +19,9 @@ This repository contains two main module that called user and category .every mo
 
 follow these steps to work with this api
 
-#### First npm install
+### First npm install
 
 > for install third party packages and dependencies you must use ( npm install )
 
-#### Prisma
+### Prisma
 > for orm we use prisma to manage database query, for use it first of all you must inject all models into specefic database. for that you must you npx prisma migrate dev --name you-migrate-name
