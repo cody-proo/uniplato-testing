@@ -15,6 +15,12 @@ This repository contains two main module that called user and category .every mo
 > joi,
 > prisma
 
+# EndPoints
+- GET /category -> for selecting all categories
+- GET /category/:id -> for selecting single category by id
+- POST /category -> for create new category based on title and amount
+- PATCH /category/:id -> for updating title and amount of category based on id
+
 # How Use This API
 
 follow these steps to work with this api
