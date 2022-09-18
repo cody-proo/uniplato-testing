@@ -27,7 +27,10 @@ export class UserMiddleware {
     response: Response,
     next: NextFunction
   ) {
+    // User Role Come From Decoded Token
     const userRole = request?.user?.role!;
+
+    // Route Can Contains Multiple Role Or Single Role For Multiple Role Get Array For Single Role Get String
     const arrayCheckingRole =
       Array.isArray(type) && (type as UserRole[]).includes(userRole);
     const stringCheckingRole =
