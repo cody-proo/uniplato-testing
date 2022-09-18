@@ -27,20 +27,29 @@ This repository contains two main module that called user and category .every mo
 - User Endpoints
   - POST /user/signup -> for signing up new user in system that based on email, password, role, bio
   - POST /user/login -> for login based on email and password
-  - GET /user -> get user profile based on token 
+  - GET /user -> get user profile based on token
 
 # How Use This API
 
 follow these steps to work with this api
 
-### First npm install
+### Install Third Party Package
 
-> for install third party packages and dependencies you must use ( npm install )
+> for use this api first of all you must install dependencies
+
+- npm install
 
 ### Prisma
 
-> for orm we use prisma to manage database query, for use it first of all you must inject all models into specefic database. for that you must you use npx prisma migrate dev --name you-migrate-name
+> for orm we use prisma to manage database query, for use it first of all you must inject all models into specefic database. for that you must you use
+
+- npx prisma migrate dev --name you-migrate-name
 
 ### Environment Variables
 
 > for running prisma on specefic database you need url. that url points to database . and you also need port for running server on specefic routes
+
+- PORT
+- DATABASE_URL
+- SECRET_KEY
+- TOKEN_EXP
