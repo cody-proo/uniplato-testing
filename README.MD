@@ -58,3 +58,7 @@ follow these steps to work with this api
 ### At The End Start And Enjoy That
 > after doing all previos steps , now you ready to use this apis
 - npm start
+
+### TESTING
+> for testing we use jest and supertest , end2end testing that test nearest layer to client
+- npm run test

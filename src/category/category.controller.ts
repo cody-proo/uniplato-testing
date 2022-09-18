@@ -40,13 +40,21 @@ export class CategoryController extends BaseController {
   // update category action
   update = async (request: Request, response: Response) => {
     const { categoryId } = request.params;
+    const categorySelected = await this.repo.category.findUnique({
+      where: { id: +categoryId },
+    });
+    if (!categorySelected) {
+      return response
+        .status(404)
+        .json({ message: "Category Not Found" });
+    }
     const updatedCategory = await this.repo.category.update({
       where: { id: +categoryId },
       data: request.body,
     });
     if (!updatedCategory) {
       return response
-        .status(400)
+        .status(500)
         .json({ message: "Update Process Failed ..." });
     }
     return response.status(200).json({ category: updatedCategory });

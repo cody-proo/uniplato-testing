@@ -9,10 +9,13 @@ describe("Category Endpoints", () => {
   beforeAll(() => {
     prisma = new PrismaClient();
   });
+
+  // FETCH ALL CATEGORIES
   describe("FETCH ALL : /category", () => {
     it("Success", async () => {
+      // SEND GET REQUEST TO /category
       const response = await request(app()).get("/category");
-      // check response shape
+      // CHECK RESPONSE SHAPE
       expect(response.body).toEqual({
         categories: expect.arrayContaining([
           expect.objectContaining({
@@ -22,22 +25,29 @@ describe("Category Endpoints", () => {
           }),
         ]),
       });
-      // check response status
+      // CHECK RESPONSE STATUS CODE
       expect(response.statusCode).toBe(200);
     });
   });
 
+  // GET SINGLE CATEGORY
   describe("FETCH SINGLE : /category/:id", () => {
+    // FAIL CASE
     it("Failed", async () => {
+      // SEND REQUEST TO WRONG CATEGORY ID
       const response = await request(app()).get("/category/123456");
       expect(response.statusCode).toBe(404);
     });
 
+    // SUCCESS CASE
     it("Success", async () => {
+      // GET SPECEFIC RECORD FROM DATABASE TO USE IDS FOR SENDING REQUEST
       const data = await prisma.category.findFirst();
+      // SEND REQUEST TO GET SPECEFIC CATEGORY BASED ON ID
       const response = await request(app()).get(
         `/category/${data?.id}`
       );
+      // CHECK RESPONSE SHAPE
       expect(response.body).toEqual({
         category: expect.objectContaining({
           title: expect.any(String),
@@ -45,56 +55,75 @@ describe("Category Endpoints", () => {
           amount: expect.any(Number),
         }),
       });
+      // CHECK RESPONSE CODE
       expect(response.statusCode).toBe(200);
     });
   });
 
+  // CREATE CATEGORY
   describe("CREATE CATEGORY : /category", () => {
+    // TEST FOR WRONG PERMISSION
     it("Failed PERMISSION DENIED", async () => {
+      // GET COLLOBRATOR USER BUT FOR THIS ROUTE ADMIN CAN CREATE CATEGORY
       const collaboratorUser = await prisma.user.findFirst({
         where: { role: UserRole.COLLABORATOR },
       });
+      // GENERATE TOKEN
       const token = jwt.sign(
         { id: collaboratorUser?.id, role: collaboratorUser?.role },
         "supersecretkey",
         { expiresIn: config.TOKEN_EXP }
       );
+      // SEND REQUEST TO SPECEFIC ROUTES
       const response = await request(app())
         .post("/category")
         .set({ authorization: `Bearer ${token}` })
         .send({ title: "Some Title", amount: 1 });
 
+      // CHECK RESPONSE MESSAGE ON FAILING
       expect(response.body).toEqual({
         message: "Permission Denied",
       });
 
+      // CHECK REQUEST STATUS CODE
       expect(response.statusCode).toEqual(403);
     });
+
+    // TEST FOR UNAUTHORIZED USER , WHEN DONT HAVE TOKEN
     it("Failed UNAUTH", async () => {
+      // SEND REQUEST TO /category TO CREATE OWN CATEGORY
       const response = await request(app())
         .post("/category")
         .send({ title: "Some Title", amount: 1 });
 
+      // CHECK RESPONSE OF FAILING
       expect(response.body).toEqual({
         message: "Unauthorization",
       });
 
+      // CHECK STATUS CODE
       expect(response.statusCode).toEqual(401);
     });
+
+    // SUCCESS CASE FOR CREATING CATEGORY
     it("SUCCESS", async () => {
+      // GET USER ADMIN FROM DATABASE
       const adminUser = await prisma.user.findFirst({
         where: { role: UserRole.ADMIN },
       });
+      // GENERATE TOKEN
       const token = jwt.sign(
         { id: adminUser?.id, role: adminUser?.role },
         "supersecretkey",
         { expiresIn: config.TOKEN_EXP }
       );
+      // SEND REQUEST TO CREATE CATEGORY
       const response = await request(app())
         .post("/category")
         .set({ authorization: `Bearer ${token}` })
         .send({ title: "Some Title", amount: 1 });
 
+      // CHECK RESPONSE SHARE
       expect(response.body).toEqual({
         category: expect.objectContaining({
           id: expect.any(Number),
@@ -103,24 +132,34 @@ describe("Category Endpoints", () => {
         }),
       });
 
+      // CHECK RESPONSE STATUS CODE
       expect(response.statusCode).toEqual(201);
     });
   });
 
+  // UPDATE CATEGORY
   describe("UPDATE CATEGORY : /category", () => {
+    // SUCCESS CASE FOR UPDATING TITLE
     it("SUCCESS - TITLE UPDATE", async () => {
+      // GET SINGLE USER THAT CAN BE ADMIN OR COLLABRATOR
       const user = await prisma.user.findFirst({});
+      // GET SINGLE CATEGORY TO UPDATE
       const category = await prisma.category.findFirst({});
+      // GENERATE TOKEN BASED ON SELECTED USER
       const token = jwt.sign(
         { id: user?.id, role: user?.role },
         "supersecretkey",
         { expiresIn: config.TOKEN_EXP }
       );
+      // SEND REQUEST TO UPDATE CATEGORY
       const response = await request(app())
         .patch(`/category/${category?.id}`)
         .set({ authorization: `Bearer ${token}` })
         .send({ title: "UPDATE TITLE" });
+
+      // CHECK RESPONSE STATUS CODE
       expect(response.statusCode).toEqual(200);
+      // CHECK RESPONSE SHAPE
       expect(response.body).toEqual({
         category: expect.objectContaining({
           title: "UPDATE TITLE",
@@ -128,9 +167,11 @@ describe("Category Endpoints", () => {
           id: expect.any(Number),
         }),
       });
+      // SELECT AGAIN CATEGORY THAT UPDATED TO CHECK IS UPDATE DONE SUCCESSFULLY
       const updatedCategory = await prisma.category.findUnique({
         where: { id: category?.id },
       });
+      // DATA SHAPE FOR UPDATED CATEGORY
       expect(updatedCategory).toEqual(
         expect.objectContaining({
           title: "UPDATE TITLE",
@@ -140,6 +181,7 @@ describe("Category Endpoints", () => {
       );
     });
 
+    // SUCCESS CASE FOR UPDATING AMOUNT
     it("SUCCESS - AMOUNT UPDATE", async () => {
       const user = await prisma.user.findFirst({});
       const category = await prisma.category.findFirst({});
@@ -172,6 +214,7 @@ describe("Category Endpoints", () => {
       );
     });
 
+    // SUCCESS CASE FOR UPDATING BOTH AMOUNT AND TITLE
     it("SUCCESS - BOTH UPDATE", async () => {
       const user = await prisma.user.findFirst({});
       const category = await prisma.category.findFirst({});
@@ -180,11 +223,14 @@ describe("Category Endpoints", () => {
         "supersecretkey",
         { expiresIn: config.TOKEN_EXP }
       );
+      // SEND PATCH REQUEST TO UPDATE TITLE AND AMOUNT CATEGORY
       const response = await request(app())
         .patch(`/category/${category?.id}`)
         .set({ authorization: `Bearer ${token}` })
         .send({ amount: 10, title: "BOTH UPDATE" });
+      // CHECK RESPONSE STATUS CODE
       expect(response.statusCode).toEqual(200);
+      // CHECK RESPONSE SHAPE
       expect(response.body).toEqual({
         category: expect.objectContaining({
           amount: 10,
@@ -202,6 +248,23 @@ describe("Category Endpoints", () => {
           id: expect.any(Number),
         })
       );
+    });
+
+    // FAILED CASE FOR UPDATE TITLE OR AMOUNT
+    it("FAILED - UPDATE TITLE OR AMOUNT", async () => {
+      const user = await prisma.user.findFirst({});
+      const token = jwt.sign(
+        { id: user?.id, role: user?.role },
+        "supersecretkey",
+        { expiresIn: config.TOKEN_EXP }
+      );
+      // SEND REQUEST TO NOT EXISTING CATEGORY ON DATABASE
+      const response = await request(app())
+        .patch("/category/123456789")
+        .set({ authorization: `Bearer ${token}` })
+        .send({ title: "Update Title" });
+      // CHECK CORRECT STATUS CODE
+      expect(response.statusCode).toBe(404);
     });
   });
 });
