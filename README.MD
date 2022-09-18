@@ -24,4 +24,9 @@ follow these steps to work with this api
 > for install third party packages and dependencies you must use ( npm install )
 
 ### Prisma
-> for orm we use prisma to manage database query, for use it first of all you must inject all models into specefic database. for that you must you npx prisma migrate dev --name you-migrate-name
+
+> for orm we use prisma to manage database query, for use it first of all you must inject all models into specefic database. for that you must you use npx prisma migrate dev --name you-migrate-name
+
+### Environment Variables
+
+> for running prisma on specefic database you need url. that url points to database . and you also need port for running server on specefic routes
