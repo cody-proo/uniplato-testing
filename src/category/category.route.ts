@@ -6,6 +6,7 @@ import { CategoryController } from "./category.controller";
 import {
   createCategorySchema,
   updateCategorySchema,
+  categoryIdParam,
 } from "./category.validation";
 
 export class CategoryRouter {
@@ -30,6 +31,12 @@ export class CategoryRouter {
     // get single category route for retreiving single category
     this.app.get(
       "/category/:categoryId",
+      // validating category id params
+      this.appMiddleware.validation.bind(
+        null,
+        categoryIdParam,
+        "param"
+      ),
       this.categoryController.getOne
     );
 
@@ -59,6 +66,14 @@ export class CategoryRouter {
       ),
       // auth middleware
       this.userMiddleware.auth,
+      // validating category id params
+      this.appMiddleware.validation.bind(
+        null,
+        categoryIdParam,
+        "param"
+      ),
+      // pipe for converting string format to number
+      this.appMiddleware.numberPipe,
       // role middleware binding that must be admin or collaborator
       this.userMiddleware.checkRole.bind(null, [
         UserRole.COLLABORATOR,

@@ -1,23 +1,24 @@
 import { UserRole } from "@prisma/client";
 import joi from "joi";
+import { UserMessage } from "./user.message";
 
 // Validation Schema For Signup That Contains Email - Password - Bio - Role
 export const signupSchema = joi.object().keys({
   email: joi.string().email().required().messages({
     // Customizing Error Messages
-    "string.base": "you must enter string for email",
-    "any.required": "you must enter email address",
-    "string.email": "you must enter valid email address",
+    "string.base": UserMessage.emailInvalidFormat,
+    "any.required": UserMessage.emailRequired,
+    "string.email": UserMessage.emailInvalidFormat,
   }),
   password: joi.string().min(8).required().messages({
     // Customizing Error Messages
-    "string.base": "you must enter string for password",
-    "any.required": "you must enter password",
-    "string.min": "your password must contain atleast 8 character",
+    "string.base": UserMessage.passwordString,
+    "any.required": UserMessage.passwordRequired,
+    "string.min": UserMessage.passwordInvalidFormat,
   }),
   bio: joi.string().optional().messages({
     // Customizing Error Messages
-    "string.base": "you must enter string for bio",
+    "string.base": UserMessage.bioInvalidFormat,
   }),
   role: joi
     .string()
@@ -25,8 +26,8 @@ export const signupSchema = joi.object().keys({
     .optional()
     .messages({
       // Customizing Error Messages
-      "string.base": "you must enter string for role",
-      "any.valid": `user role must be ${Object.values(UserRole)}`,
+      "string.base": UserMessage.roleString,
+      "any.valid": UserMessage.roleInvalidEnum,
     }),
 });
 
@@ -34,14 +35,14 @@ export const signupSchema = joi.object().keys({
 export const loginSchema = joi.object().keys({
   email: joi.string().email().required().messages({
     // Customizing Error Messages
-    "string.base": "you must enter string for email",
-    "any.required": "you must enter email address",
-    "string.email": "you must enter valid email address",
+    "string.base": UserMessage.emailInvalidFormat,
+    "any.required": UserMessage.emailRequired,
+    "string.email": UserMessage.emailInvalidFormat,
   }),
   password: joi.string().min(8).required().messages({
     // Customizing Error Messages
-    "string.base": "you must enter string for password",
-    "any.required": "you must enter password",
-    "string.min": "your password must contain atleast 8 character",
+    "string.base": UserMessage.passwordString,
+    "any.required": UserMessage.passwordRequired,
+    "string.min": UserMessage.passwordInvalidFormat,
   }),
 });

@@ -4,6 +4,7 @@ import jwt from "jsonwebtoken";
 import { PrismaClient, UserRole } from "@prisma/client";
 import { createValidCategoryStub } from "./category.stub";
 import { StatusCode } from "../config/statusCode.config";
+import { UserMessage } from "../user/user.message";
 
 describe("Category Endpoints", () => {
   let prisma: PrismaClient;
@@ -86,7 +87,7 @@ describe("Category Endpoints", () => {
 
       // CHECK RESPONSE MESSAGE ON FAILING
       expect(response.body).toEqual({
-        message: "Permission Denied",
+        message: UserMessage.permissionDenined,
       });
 
       // CHECK REQUEST STATUS CODE
@@ -102,7 +103,7 @@ describe("Category Endpoints", () => {
 
       // CHECK RESPONSE OF FAILING
       expect(response.body).toEqual({
-        message: "Unauthorization",
+        message: UserMessage.unauth,
       });
 
       // CHECK STATUS CODE

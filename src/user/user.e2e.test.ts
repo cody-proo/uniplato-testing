@@ -9,6 +9,7 @@ import {
   createValidUserStub,
   validUserStub,
 } from "./user.stub";
+import { UserMessage } from "./user.message";
 
 describe("User Endpoints", () => {
   let prisma: PrismaClient;
@@ -40,7 +41,7 @@ describe("User Endpoints", () => {
       expect(response.statusCode).toBe(StatusCode.BAD_REQUEST);
       // CHECK RESPONSE SHAPE
       expect(response.body).toEqual({
-        message: "Email Address Dosn't Match With Password",
+        message: UserMessage.invalidEmailOrPassword,
       });
     });
 
@@ -55,8 +56,8 @@ describe("User Endpoints", () => {
       //   CHECK RESPONSE SHAPE
       expect(response.body).toEqual({
         messages: [
-          "you must enter valid email address",
-          "your password must contain atleast 8 character",
+          UserMessage.emailInvalidFormat,
+          UserMessage.passwordInvalidFormat,
         ],
       });
     });
@@ -83,7 +84,7 @@ describe("User Endpoints", () => {
       expect(response.statusCode).toBe(StatusCode.BAD_REQUEST);
       // CHECK RESPONSE SHAPE
       expect(response.body).toEqual({
-        message: "Email is already taken",
+        message: UserMessage.emailTaken,
       });
     });
 
@@ -96,10 +97,11 @@ describe("User Endpoints", () => {
       // CHECK STATUS CODE
       expect(response.statusCode).toBe(StatusCode.BAD_REQUEST);
       //   CHECK RESPONSE SHAPE
+      console.log(UserMessage);
       expect(response.body).toEqual({
         messages: [
-          "you must enter valid email address",
-          "your password must contain atleast 8 character",
+          UserMessage.emailInvalidFormat,
+          UserMessage.passwordInvalidFormat,
         ],
       });
     });
@@ -142,7 +144,7 @@ describe("User Endpoints", () => {
     it("FAILED - FETCH USER INFORMATION WITHOUT ANY EXISTTING TOKEN ON HEADER", async () => {
       const response = await request(app()).get("/user");
       expect(response.statusCode).toBe(StatusCode.UN_AUTH);
-      expect(response.body).toEqual({ message: "Unauthorization" });
+      expect(response.body).toEqual({ message: UserMessage.unauth });
     });
   });
 });

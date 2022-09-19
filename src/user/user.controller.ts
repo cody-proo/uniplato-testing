@@ -3,6 +3,8 @@ import jwt from "jsonwebtoken";
 import { Request, Response } from "express";
 import { BaseController } from "../config/controller.config";
 import { config } from "../config";
+import { UserMessage } from "./user.message";
+import { StatusCode } from "../config/statusCode.config";
 
 export class UserController extends BaseController {
   // Login Action For User Route
@@ -13,8 +15,8 @@ export class UserController extends BaseController {
     });
     // If User With This Email Not Exist
     if (!user) {
-      return response.status(400).json({
-        message: "Email Address Dosn't Match With Password",
+      return response.status(StatusCode.BAD_REQUEST).json({
+        message: UserMessage.invalidEmailOrPassword,
       });
     }
     const isMatchPassword = await bcrypt.compare(
@@ -23,8 +25,8 @@ export class UserController extends BaseController {
     );
     // If User Exist But Dosn't Match Password
     if (!isMatchPassword) {
-      return response.status(400).json({
-        message: "Email Address Dosn't Match With Password",
+      return response.status(StatusCode.BAD_REQUEST).json({
+        message: UserMessage.invalidEmailOrPassword,
       });
     }
 
@@ -35,7 +37,7 @@ export class UserController extends BaseController {
       { expiresIn: config.TOKEN_EXP }
     );
 
-    return response.status(200).json({ token });
+    return response.status(StatusCode.OK).json({ token });
   };
 
   // Signup Action
@@ -47,8 +49,8 @@ export class UserController extends BaseController {
     });
     if (isExistUser) {
       return response
-        .status(400)
-        .json({ message: "Email is already taken" });
+        .status(StatusCode.BAD_REQUEST)
+        .json({ message: UserMessage.emailTaken });
     }
     // Hashing Password For Security Reason
     const hashPassword = await bcrypt.hash(password, 8);
@@ -62,7 +64,7 @@ export class UserController extends BaseController {
       config.SECRET_KEY,
       { expiresIn: config.TOKEN_EXP }
     );
-    return response.status(201).json({ token });
+    return response.status(StatusCode.CREATE).json({ token });
   };
 
   // Get User Profile Information
@@ -73,8 +75,10 @@ export class UserController extends BaseController {
     });
     // If No One Exist With This ID Throw Error
     if (!user) {
-      return response.status(404).json({ message: "User Not Found" });
+      return response
+        .status(StatusCode.NOT_FOUND)
+        .json({ message: UserMessage.notFound });
     }
-    return response.status(200).json({ user });
+    return response.status(StatusCode.OK).json({ user });
   };
 }

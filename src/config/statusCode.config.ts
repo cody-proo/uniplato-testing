@@ -5,4 +5,5 @@ export class StatusCode {
   static BAD_REQUEST = 400;
   static FORBIDDEN = 403;
   static NOT_FOUND = 404;
+  static INTERNAL_SERVER = 500;
 }

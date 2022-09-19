@@ -1,12 +1,14 @@
 import { Request, Response } from "express";
 import { BaseController } from "../config/controller.config";
+import { StatusCode } from "../config/statusCode.config";
+import { CategoryMessage } from "./category.message";
 
 // category controller for handing category route
 export class CategoryController extends BaseController {
   // get all categories action
   getAll = async (request: Request, response: Response) => {
     const categories = await this.repo.category.findMany();
-    return response.status(200).json({ categories });
+    return response.status(StatusCode.OK).json({ categories });
   };
 
   // get single category action
@@ -19,10 +21,12 @@ export class CategoryController extends BaseController {
     });
     if (!selectedCategory) {
       return response
-        .status(404)
-        .json({ message: "No Category Exist" });
+        .status(StatusCode.NOT_FOUND)
+        .json({ message: CategoryMessage.notFound });
     }
-    return response.json({ category: selectedCategory });
+    return response
+      .status(StatusCode.OK)
+      .json({ category: selectedCategory });
   };
 
   // create category action
@@ -34,7 +38,9 @@ export class CategoryController extends BaseController {
         amount,
       },
     });
-    return response.status(201).json({ category: newCategory });
+    return response
+      .status(StatusCode.CREATE)
+      .json({ category: newCategory });
   };
 
   // update category action
@@ -45,8 +51,8 @@ export class CategoryController extends BaseController {
     });
     if (!categorySelected) {
       return response
-        .status(404)
-        .json({ message: "Category Not Found" });
+        .status(StatusCode.NOT_FOUND)
+        .json({ message: CategoryMessage.notFound });
     }
     const updatedCategory = await this.repo.category.update({
       where: { id: +categoryId },
@@ -54,9 +60,11 @@ export class CategoryController extends BaseController {
     });
     if (!updatedCategory) {
       return response
-        .status(500)
-        .json({ message: "Update Process Failed ..." });
+        .status(StatusCode.INTERNAL_SERVER)
+        .json({ message: CategoryMessage.updateFailed });
     }
-    return response.status(200).json({ category: updatedCategory });
+    return response
+      .status(StatusCode.OK)
+      .json({ category: updatedCategory });
   };
 }

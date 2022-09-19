@@ -1,7 +1,9 @@
 import { UserRole } from "@prisma/client";
 import { NextFunction, Request, Response } from "express";
 import jwt, { JwtPayload } from "jsonwebtoken";
+import { StatusCode } from "../config/statusCode.config";
 import { IRequestUser } from "../custom";
+import { UserMessage } from "./user.message";
 
 // Middleware That Interact Directly With User
 export class UserMiddleware {
@@ -10,15 +12,15 @@ export class UserMiddleware {
     const token = request.get("authorization")?.split("Bearer ")[1];
     if (!token) {
       return response
-        .status(401)
-        .json({ message: "Unauthorization" });
+        .status(StatusCode.UN_AUTH)
+        .json({ message: UserMessage.unauth });
     }
     const decodedToken = jwt.decode(token) as JwtPayload &
       IRequestUser;
     if (decodedToken.exp! * 1000 < Date.now()) {
       return response
-        .status(401)
-        .json({ message: "Unauthorization" });
+        .status(StatusCode.UN_AUTH)
+        .json({ message: UserMessage.unauth });
     }
     request.user = { id: decodedToken.id, role: decodedToken.role };
     return next();
@@ -41,8 +43,8 @@ export class UserMiddleware {
       typeof type === "string" && userRole === type;
     if (!arrayCheckingRole && !stringCheckingRole) {
       return response
-        .status(403)
-        .json({ message: "Permission Denied" });
+        .status(StatusCode.FORBIDDEN)
+        .json({ message: UserMessage.permissionDenined });
     }
     return next();
   }
