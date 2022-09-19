@@ -1,3 +1,4 @@
+import { StatusCode } from "./statusCode.config";
 import { NextFunction, Request, Response } from "express";
 import joi from "joi";
 
@@ -22,7 +23,7 @@ export class AppMiddleware {
     );
     // If Request Body Contain At Least One Error Throw It
     if (error?.message) {
-      return response.status(400).json({
+      return response.status(StatusCode.BAD_REQUEST).json({
         messages: error?.message?.split(".")?.map((e) => e.trim()),
       });
     }
