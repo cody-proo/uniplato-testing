@@ -39,12 +39,11 @@ follow these steps to work with this api
 
 - npm install
 
-### Prisma
+### How Prepare Database
 
-> for orm we use prisma to manage database query, for use it first of all you must inject all models into specefic database. for that you must you use
-
-- first specify correct database_url on .env file
-- npx prisma migrate dev --name you-migrate-name
+- fix information in .env like db_port, ...
+- sync database_url with seprated information of database in .env
+- npm run db for doing process for preparing db and insert some fake data to it
 
 ### Environment Variables
 
@@ -61,13 +60,13 @@ follow these steps to work with this api
 
 - npm start
 
-### TESTING
+### Testing
 
 > for testing we use jest and supertest , end2end testing that test nearest layer to client
 
 - npm run test
 
-# SOME FACT ABOUT READING SOURCE
+# Some Fact About Sources
 
 - you can see somewhere we use StatusCode class that use to manage status codes of request - it s some abstraction about status code
   - OK 200
@@ -77,3 +76,7 @@ follow these steps to work with this api
   - FORBIDDEN 403
   - NOT_FOUND 404
   - INTERNAL_SERVER 500
+
+- we have two kinds of role in application  
+  - COLLABORATOR -> READ UPDATE
+  - ADMIN -> READ UPDATE CREATE

@@ -1,29 +1,45 @@
 const mysql = require("mysql");
 const cmd = require("child_process");
 const { exit } = require("process");
+require("dotenv").config();
 
+const host = process.env.DB_HOST;
+const port = process.env.DB_PORT;
+const user = process.env.DB_USER;
+const password = process.env.DB_PASS;
+const dbname = process.env.DB_NAME;
+
+// CREATE CONNECT BETWEEN APP AND MYSQL
 const db = mysql.createConnection({
-  host: "localhost",
-  port: 3306,
-  user: "nima",
-  password: "Nima1381*",
+  host,
+  port,
+  user,
+  password,
 });
 
+// CONNECT TO MYSQL
 db.connect((err) => {
-  db.query("SHOW DATABASES like 'FOO6'", (_, database) => {
+  // CHECK IS DATABASE EXIST
+  db.query(`SHOW DATABASES like '${dbname}'`, (_, database) => {
+    // IF EXIST RETURN ERROR
     if (database.length > 0) {
       throw new Error("Database Exist");
     } else {
-      db.query("CREATE DATABASE FOO6");
+      // CREATE DATABASE BASED ON DATABASE NAME
+      db.query(`CREATE DATABASE ${dbname}`);
+      // EXECUTE AND INJECT PRISMA CONFIG INTO DATABASE
       cmd.exec(
         "npx prisma migrate dev --name init",
         (err, st, stder) => {
-          db.query("use FOO6", () => {
-            db.query("INSERT INTO Category VALUES (1, 'bar', 1);");
-            db.query("INSERT INTO Category VALUES (2, 'baz', 1);");
+          // SELECT CREATED DATABASE
+          db.query(`use ${dbname}`, () => {
+            // ADD SOME DEFAULT DATA INTO DATABASE
+            db.query("INSERT INTO categories VALUES (1, 'bar', 1);");
+            db.query("INSERT INTO categories VALUES (2, 'baz', 2);");
             db.query(
-              "INSERT INTO Category VALUES (3, 'foo', 1);",
+              "INSERT INTO categories VALUES (3, 'foo', 3);",
               () => {
+                // EXIT FROM APP
                 exit(1);
               }
             );

@@ -1,5 +1,5 @@
 -- CreateTable
-CREATE TABLE `Category` (
+CREATE TABLE `categories` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `title` VARCHAR(100) NOT NULL,
     `amount` INTEGER NULL DEFAULT 0,
@@ -8,7 +8,7 @@ CREATE TABLE `Category` (
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
-CREATE TABLE `User` (
+CREATE TABLE `users` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `email` VARCHAR(100) NOT NULL,
     `password` VARCHAR(100) NOT NULL,
@@ -17,6 +17,6 @@ CREATE TABLE `User` (
     `updatedAt` DATETIME(3) NOT NULL,
     `role` ENUM('ADMIN', 'COLLABORATOR') NOT NULL DEFAULT 'COLLABORATOR',
 
-    UNIQUE INDEX `User_email_key`(`email`),
+    UNIQUE INDEX `users_email_key`(`email`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;

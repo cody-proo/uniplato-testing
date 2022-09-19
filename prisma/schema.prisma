@@ -16,6 +16,8 @@ model Category {
   id     Int    @id @default(autoincrement())
   title  String @db.VarChar(100)
   amount Int?   @default(0)
+
+  @@map("categories")
 }
 
 model User {
@@ -26,4 +28,6 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   role      UserRole @default(COLLABORATOR)
+
+  @@map("users")
 }
