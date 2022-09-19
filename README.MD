@@ -70,10 +70,10 @@ follow these steps to work with this api
 # SOME FACT ABOUT READING SOURCE
 
 - you can see somewhere we use StatusCode class that use to manage status codes of request - it s some abstraction about status code
-- OK 200
-- CREATE 201
-- UN_AUTH 401
-- BAD_REQUEST 400
-- FORBIDDEN 403
-- NOT_FOUND 404
-- INTERNAL_SERVER 500
+  - OK 200
+  - CREATE 201
+  - UN_AUTH 401
+  - BAD_REQUEST 400
+  - FORBIDDEN 403
+  - NOT_FOUND 404
+  - INTERNAL_SERVER 500
