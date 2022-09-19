@@ -1,6 +1,6 @@
 -- CreateTable
 CREATE TABLE `Category` (
-    `id` INTEGER NOT NULL,
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
     `title` VARCHAR(100) NOT NULL,
     `amount` INTEGER NULL DEFAULT 0,
 
