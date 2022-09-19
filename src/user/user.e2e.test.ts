@@ -97,7 +97,6 @@ describe("User Endpoints", () => {
       // CHECK STATUS CODE
       expect(response.statusCode).toBe(StatusCode.BAD_REQUEST);
       //   CHECK RESPONSE SHAPE
-      console.log(UserMessage);
       expect(response.body).toEqual({
         messages: [
           UserMessage.emailInvalidFormat,

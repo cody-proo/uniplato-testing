@@ -1,6 +1,7 @@
 const mysql = require("mysql");
 const cmd = require("child_process");
 const { exit } = require("process");
+const bcrypt = require("bcrypt");
 require("dotenv").config();
 
 const host = process.env.DB_HOST;
@@ -34,6 +35,12 @@ db.connect((err) => {
           // SELECT CREATED DATABASE
           db.query(`use ${dbname}`, () => {
             // ADD SOME DEFAULT DATA INTO DATABASE
+            db.query(
+              `INSERT INTO users (id, email, password, role, updatedAt) VALUES (1, 'hosein@gmail.com', '${bcrypt.hashSync(
+                "123456789",
+                8
+              )}', 'ADMIN', NOW());`
+            );
             db.query("INSERT INTO categories VALUES (1, 'bar', 1);");
             db.query("INSERT INTO categories VALUES (2, 'baz', 2);");
             db.query(
