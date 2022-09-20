@@ -28,6 +28,8 @@ This repository contains two main module that called user and category .every mo
   - POST /user/signup -> for signing up new user in system that based on email, password, role, bio
   - POST /user/login -> for login based on email and password
   - GET /user -> get user profile based on token
+- Document
+  / GET /document -> for reading documentation
 
 # How Use This API
 
